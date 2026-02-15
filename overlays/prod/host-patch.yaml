@@ -4,7 +4,7 @@ metadata:
   name: myapp-ingress
 spec:
   rules:
-  - host: myapp.example.com
+  - host: myapp.k3s.home.lan
     http:
       paths:
       - path: /
