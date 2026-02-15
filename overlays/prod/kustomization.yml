@@ -4,5 +4,6 @@ resources:
   - ../../base
 
 namePrefix: prod-
-commonLabels:
-  environment: prod
+labels:
+  - pairs:
+      environment: prod
