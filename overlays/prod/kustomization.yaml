@@ -3,6 +3,10 @@ kind: Kustomization
 resources:
   - ../../base
 
+patches:
+  - path: host-patch.yaml
+  - path: replica-patch.yaml
+
 namePrefix: prod-
 labels:
   - pairs:
