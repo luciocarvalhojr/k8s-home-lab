@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-headlamp
+spec:
+  rules:
+  - host: my-headlamp.k3s.home.lan
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-headlamp
+            port:
+              number: 80
