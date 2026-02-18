@@ -70,7 +70,7 @@ Then open [http://localhost:9090](http://localhost:9090) in your browser.
 To customize your installation, create a `values.yaml` file and install with:
 
 ```sh
-helm install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring -f ingress.yaml
+helm install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring -f values.yaml
 ```
 
 ## Uninstall

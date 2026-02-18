@@ -1,0 +1,12 @@
+grafana:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - grafana.k3s.home.lan
+  persistence:
+    enabled: true
+    storageClassName: nfs-rwx
+    accessModes:
+      - ReadWriteMany
+    size: 5Gi

@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-rwx
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 192.168.0.110
+  share: /mnt/Data/2TB/k3s
+reclaimPolicy: Retain
+volumeBindingMode: Immediate

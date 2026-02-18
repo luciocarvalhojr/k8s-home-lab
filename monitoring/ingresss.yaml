@@ -1,6 +1,0 @@
-grafana:
-  ingress:
-    enabled: true
-    ingressClassName: traefik
-    hosts:
-      - grafana.k3s.home.lan
