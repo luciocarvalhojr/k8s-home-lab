@@ -4,6 +4,7 @@ metadata:
   name: myapp-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    external-dns.alpha.kubernetes.io/hostname: example.capihome.xyz
 spec:
   tls:
     - hosts:
