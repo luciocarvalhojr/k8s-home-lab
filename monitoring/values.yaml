@@ -3,7 +3,14 @@ grafana:
     enabled: true
     ingressClassName: traefik
     hosts:
-      - grafana.k3s.home.lan
+      - grafana.capihome.xyz
+    tls:
+      - hosts:
+          - grafana.capihome.xyz
+        secretName: wildcard-capihome-xyz-tls
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+      external-dns.alpha.kubernetes.io/hostname: grafana.capihome.xyz
   persistence:
     enabled: true
     storageClassName: nfs-rwx
