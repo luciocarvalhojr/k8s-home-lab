@@ -2,9 +2,15 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myapp-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
 spec:
+  tls:
+    - hosts:
+        - example.capihome.xyz
+      secretName: wildcard-capihome-xyz-tls
   rules:
-  - host: example.k3s.home.lan
+  - host: example.capihome.xyz
     http:
       paths:
       - path: /
