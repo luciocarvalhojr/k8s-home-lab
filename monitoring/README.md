@@ -1,85 +1,81 @@
-# Prometheus & Grafana Installation Guide
+# Monitoring Stack
 
-This guide explains how to install Prometheus and Grafana in your Kubernetes cluster using the kube-prometheus-stack Helm chart.
+This document provides instructions for installing the kube-prometheus-stack, which includes Prometheus, Grafana, and other monitoring components.
 
 ## Prerequisites
 
-- Kubernetes cluster up and running
-- `kubectl` configured to access your cluster
-- [Helm](https://helm.sh/) installed
+- A running Kubernetes cluster.
+- `kubectl` configured to access the cluster.
+- Helm v3 or later.
 
-## Installation Steps
+## Configuration
 
-### 1. Add Prometheus Community Helm Repo
+This project includes example files for `values.yaml` and `secrets.yaml`.
 
-```sh
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-```
+1.  **Create secrets for Grafana:**
+    Modify the `monitoring/secrets.yaml` file with your desired Grafana admin password and any other sensitive data. Then, apply the configuration.
+    ```sh
+    kubectl apply -f monitoring/secrets.yaml
+    ```
 
-### 2. Create Monitoring Namespace
+2.  **Configure `values.yaml`:**
+    The `monitoring/values.yaml` file contains the configuration for the kube-prometheus-stack Helm chart. Review and customize it as needed.
 
-```sh
-kubectl create namespace monitoring
-```
+## Installation
 
-### 3. Install kube-prometheus-stack
+1.  **Add the Prometheus Community Helm repository:**
+    ```sh
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
+    ```
 
-```sh
-helm install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring
-```
+2.  **Create the monitoring namespace:**
+    ```sh
+    kubectl create namespace monitoring
+    ```
 
-This will install Prometheus, Grafana, and related monitoring components with default settings.
+3.  **Install the kube-prometheus-stack:**
+    ```sh
+    helm install monitoring prometheus-community/kube-prometheus-stack \
+      --namespace monitoring \
+      -f monitoring/values.yaml
+    ```
 
-### 4. Verify Installation
+4.  **Verify the installation:**
+    ```sh
+    kubectl get pods -n monitoring -l "release=monitoring"
+    ```
 
-```sh
-kubectl --namespace monitoring get pods -l "release=monitoring"
-```
+## Accessing Services
 
-### 5. Access Grafana UI
+### Grafana
 
-Get the Grafana admin password:
+1.  **Get the Grafana admin password:**
+    ```sh
+    kubectl get secret --namespace monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+    ```
 
-```sh
-kubectl --namespace monitoring get secrets monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
-```
+2.  **Port-forward the Grafana service:**
+    ```sh
+    kubectl port-forward --namespace monitoring svc/monitoring-grafana 3000:80
+    ```
+    Access Grafana at `http://localhost:3000`. Login with the username `admin` and the password from the previous step.
 
-Port-forward the Grafana pod:
+### Prometheus
 
-```sh
-export POD_NAME=$(kubectl --namespace monitoring get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=monitoring" -oname)
-kubectl --namespace monitoring port-forward $POD_NAME 3000
-```
+1.  **Port-forward the Prometheus service:**
+    ```sh
+    kubectl port-forward --namespace monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
+    ```
+    Access Prometheus at `http://localhost:9090`.
 
-Then open [http://localhost:3000](http://localhost:3000) in your browser.  
-Login with username `admin` and the password you retrieved above.
-
-### 6. Access Prometheus UI
-
-Port-forward the Prometheus server:
-
-```sh
-kubectl --namespace monitoring port-forward svc/monitoring-kube-prometheus-stack-prometheus 9090
-```
-
-Then open [http://localhost:9090](http://localhost:9090) in your browser.
-
-## Customization
-
-To customize your installation, create a `values.yaml` file and install with:
-
-```sh
-helm install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring -f values.yaml
-```
-
-## Uninstall
+## Uninstallation
 
 ```sh
 helm uninstall monitoring --namespace monitoring
 kubectl delete namespace monitoring
 ```
 
----
+## References
 
-For more details, see the [kube-prometheus-stack Helm Chart documentation](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack).
+- [kube-prometheus-stack Helm Chart](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)

@@ -1,61 +1,35 @@
 # k8s-home-lab
 
-This repository contains a collection of tutorials and configurations for setting up a Kubernetes home lab. Each directory in this repository represents a component of the home lab and contains the necessary Kubernetes manifests and a README file with step-by-step instructions.
-
-## Table of Contents
-
-- [ArgoCD](#argocd)
-- [Cert-Manager](#cert-manager)
-- [ExternalDNS](#externaldns)
-- [MetalLB](#metallb)
-- [Monitoring](#monitoring)
-- [Headlamp](#headlamp)
-- [StorageClass](#storageclass)
+This repository contains a collection of configurations for setting up a Kubernetes home lab. Each directory represents a component and contains the necessary Kubernetes manifests and a README with step-by-step instructions.
 
 ## Components
 
-### ArgoCD
+| Component | Description |
+| --- | --- |
+| [**ArgoCD**](argocd/) | Installs and configures ArgoCD for GitOps-style continuous deployment. |
+| [**cert-manager**](cert-manager/) | Sets up cert-manager for automated TLS certificate management from various issuing sources. |
+| [**ExternalDNS**](external-dns/) | Configures ExternalDNS to automatically manage DNS records for your services and ingresses. |
+| [**IDP (authentik)**](idp/) | Deploys authentik as an Identity Provider for centralized authentication. |
+| [**k8s-apiserver-oidc**](k8s-apiserver-oidc/) | Configures the Kubernetes API server to use an OIDC provider for user authentication. |
+| [**MetalLB**](metallb/) | Installs MetalLB to provide LoadBalancer services for your bare-metal cluster. |
+| [**Monitoring**](monitoring/) | Sets up the kube-prometheus-stack for a complete cluster monitoring solution with Prometheus and Grafana. |
+| [**Headlamp**](my-headlamp/) | Installs Headlamp, a web-based UI for Kubernetes. |
+| [**StorageClass**](storageclass/) | Defines a StorageClass for persistent storage using the NFS CSI driver. |
 
-Installs ArgoCD and configures it with Traefik for access.
+## Getting Started
 
-- [ArgoCD README](argocd/README.md)
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/your-username/k8s-home-lab.git
+    cd k8s-home-lab
+    ```
 
-### Cert-Manager
+2.  **Review the components:**
+    Each component is designed to be self-contained. Read the `README.md` in each directory to understand its purpose and how to deploy it.
 
-Sets up Cert-Manager for automatic TLS certificate management.
+3.  **Deploy the components:**
+    Follow the instructions in each component's `README.md` to deploy it to your cluster. It is recommended to start with `MetalLB` and `StorageClass` to provide the foundational networking and storage layers.
 
-- [Cert-Manager README](cert-manager/README.md)
+## License
 
-### ExternalDNS
-
-Configures ExternalDNS to manage DNS records for your services.
-
-- [ExternalDNS README](external-dns/README.md)
-
-### MetalLB
-
-Installs MetalLB to provide LoadBalancer services for your bare-metal cluster.
-
-- [MetalLB README](metallb/README.md)
-
-### Monitoring
-
-Sets up Prometheus and Grafana for monitoring your cluster.
-
-- [Monitoring README](monitoring/README.md)
-
-### Headlamp
-
-Installs Headlamp, a web UI for Kubernetes.
-
-- [Headlamp README](my-headlamp/README.md)
-
-### StorageClass
-
-Defines a StorageClass for persistent storage using NFS.
-
-- [StorageClass README](storageclass/README.md)
-
-## Usage
-
-Follow the instructions in the README file of each component to set up your home lab. You can start with MetalLB and then proceed with the other components.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
