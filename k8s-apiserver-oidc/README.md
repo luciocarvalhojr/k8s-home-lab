@@ -2,6 +2,8 @@
 
 This document outlines the steps to configure OIDC authentication for the Kubernetes API server, using an external Identity Provider (like authentik).
 
+> **Reference:** For more details, see [OIDC Authentication with k3s and authentik](https://geek-cookbook.funkypenguin.co.nz/kubernetes/oidc-authentication/k3s-authentik/).
+
 ## Prerequisites
 
 - A running Kubernetes cluster (e.g., k3s).
@@ -12,30 +14,30 @@ This document outlines the steps to configure OIDC authentication for the Kubern
 
 ### A. Create the Provider
 
-1.  Navigate to **Applications -> Providers -> Create**.
-2.  Select **OAuth2/OpenID Provider**.
-3.  **Name**: `kube-apiserver`
-4.  **Authorization flow**: Default (e.g., explicit-consent).
-5.  **Client Type**: Confidential.
-6.  **Redirect URIs**: `http://localhost:8000` and `http://localhost:18000` (for `kubectl oidc-login`).
-7.  **Issuer Mode**: Per-application.
+1. Navigate to **Applications -> Providers -> Create**.
+2. Select **OAuth2/OpenID Provider**.
+3. **Client Type**: Confidential.
+4. **Redirect URIs**: `http://localhost:8000` and `http://localhost:18000` (for `kubectl oidc-login`).
+5. **Issuer Mode**: Per-application.
 
 ### B. Fix the "Email Verified" Claim
 
 Kubernetes requires `email_verified: true`. If your users aren't manually verified, create a custom mapping:
 
-1.  Go to **Customization -> Property Mappings**.
-2.  Create a **Scope Mapping**:
-    *   **Name**: `OIDC-K8s-Email-Fix`
-    *   **Scope name**: `email`
-    *   **Expression**:
-        ```python
-        return {
-            "email": request.user.email,
-            "email_verified": True
-        }
-        ```
-3.  Attach this mapping to your Provider under **Advanced Protocol Settings**.
+1. Go to **Customization -> Property Mappings**.
+2. Create a **Scope Mapping**:
+  - **Name**: `OIDC-K8s-Email-Fix`
+  - **Scope name**: `email`
+  - **Expression**:
+
+    ```python
+    return {
+      "email": request.user.email,
+      "email_verified": True
+    }
+    ```
+
+3. Attach this mapping to your Provider under **Advanced Protocol Settings**.
 
 ### C. Enable Groups Mapping
 
@@ -54,6 +56,7 @@ kube-apiserver-arg:
 ```
 
 After editing, restart the k3s service:
+
 ```sh
 sudo systemctl restart k3s
 ```
@@ -65,6 +68,7 @@ Apply the `ClusterRoleBinding` to grant `cluster-admin` rights to an OIDC group.
 ```sh
 kubectl apply -f k8s-apiserver-oidc/clusterrolebinding-oidc-group-kube-apiserver-admins.yaml
 ```
+
 This binds the `cluster-admin` role to the `kube-apiserver-admins` group, which must exist in your OIDC provider.
 
 ## 4. Client Setup (Local Machine)
@@ -84,6 +88,7 @@ kubectl config set-credentials capivara \
 ```
 
 To use it, run a command with the specified user:
+
 ```sh
 kubectl get nodes --user=capivara
 ```
@@ -93,3 +98,5 @@ kubectl get nodes --user=capivara
 - **Unauthorized:** Ensure your OIDC provider returns `email_verified: true`.
 - **Forbidden:** Double-check that the group name in `clusterrolebinding-oidc-group-kube-apiserver-admins.yaml` matches the group claim from your OIDC provider exactly.
 - **Invalid Token:** Sync the time between your k3s nodes and your OIDC provider.
+
+[OIDC Authentication with k3s and authentik](https://geek-cookbook.funkypenguin.co.nz/kubernetes/oidc-authentication/k3s-authentik/)
