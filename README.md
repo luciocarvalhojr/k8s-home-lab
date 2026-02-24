@@ -1,6 +1,77 @@
 # k8s-home-lab
 
-This repository contains a collection of configurations for setting up a Kubernetes home lab. Each directory represents a component and contains the necessary Kubernetes manifests and a README with step-by-step instructions.
+This repository contains the configurations to bootstrap a complete Kubernetes home lab using a GitOps-centric approach with ArgoCD.
+
+## Architecture
+
+*TODO: It is recommended to add a diagram here showing how the components interact. For example:*
+
+`User -> Ingress -> App -> Database`
+`ExternalDNS -> Manages DNS for Ingress`
+`cert-manager -> Provides TLS for Ingress`
+`ArgoCD -> Manages all deployments`
+`Monitoring -> Scrapes metrics from all components`
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed and configured:
+
+*   A running Kubernetes cluster (e.g., k3s, kubeadm).
+*   `kubectl` pointing to your cluster.
+*   `helm` (v3+)
+*   `kustomize` (v4+)
+*   `sops` for secret decryption.
+*   An `age.agekey` file in the root of this repository with the key used to encrypt the SOPS secrets.
+
+## Repository Structure
+
+*   `argocd/`: Contains the master ArgoCD application that deploys all other applications (apps-of-apps pattern).
+*   `base/`: Kustomize base for a sample application.
+*   `overlays/`: Kustomize overlays for different environments (e.g., `dev`, `prod`).
+*   `cert-manager/`, `external-dns/`, etc.: Each directory is a self-contained component deployed as a Helm chart or Kubernetes manifests. Each has its own `README.md` for specific details.
+*   `.sops.yaml`: Configuration file for SOPS encryption.
+
+## Deployment Workflow
+
+This setup is designed to be managed by ArgoCD. The recommended deployment process is as follows:
+
+1.  **Clone the Repository:**
+    ```sh
+    git clone https://github.com/your-username/k8s-home-lab.git
+    cd k8s-home-lab
+    ```
+
+2.  **Prepare Secrets:**
+    The secrets in this repository are encrypted with SOPS. To decrypt them, you need the corresponding `age` private key.
+    *   Place your private key in a file named `age.agekey` in the project root.
+    *   To view a secret, run:
+        ```sh
+        sops -d path/to/secret.yaml
+        ```
+    *   To edit a secret, run:
+        ```sh
+        sops path/to/secret.yaml
+        ```
+
+3.  **Install ArgoCD:**
+    First, you need to install ArgoCD itself into the cluster. This is a manual, one-time step.
+    ```sh
+    # Follow the instructions in the argocd/README.md for the initial ArgoCD installation.
+    # Typically, this involves creating the namespace and applying the official Helm chart.
+    ```
+
+4.  **Bootstrap the App-of-Apps:**
+    Once ArgoCD is running, you apply the root application, which tells ArgoCD to manage all other applications defined in this repository.
+    ```sh
+    # Ensure you are in the root of the repository
+    kubectl apply -f argocd/argocd-apps-cleaned.yaml
+    ```
+    ArgoCD will now start deploying all the components listed in `argocd-apps-cleaned.yaml`. You can monitor the progress from the ArgoCD UI.
+
+## Accessing Your Lab
+
+*   **ArgoCD:** Follow the instructions in the `argocd/README.md` to get the initial admin password and access the UI, typically via a port-forward.
+*   **Grafana, Headlamp, etc.:** Once deployed by ArgoCD, these applications will be accessible via Ingress. Check the hostnames defined in their respective `ingress.yaml` or `values.yaml` files.
 
 ## Components
 
@@ -16,20 +87,6 @@ This repository contains a collection of configurations for setting up a Kuberne
 | [**Headlamp**](my-headlamp/) | Helm | Installs Headlamp, a web-based UI for Kubernetes. |
 | [**StorageClass**](storageclass/) | Direct Apply | Defines a StorageClass for persistent storage using the NFS CSI driver. |
 | [**Main Application**](base/) | Kustomize | The main application, deployed via ArgoCD. |
-
-## Getting Started
-
-1.  **Clone the repository:**
-    ```sh
-    git clone https://github.com/your-username/k8s-home-lab.git
-    cd k8s-home-lab
-    ```
-
-2.  **Review the components:**
-    Each component is designed to be self-contained. Read the `README.md` in each directory to understand its purpose and how to deploy it.
-
-3.  **Deploy the components:**
-    Follow the instructions in each component's `README.md` to deploy it to your cluster. It is recommended to start with `MetalLB` and `StorageClass` to provide the foundational networking and storage layers.
 
 ## License
 
