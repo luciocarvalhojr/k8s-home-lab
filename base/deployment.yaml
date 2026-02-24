@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: nginx:alpine
+        image: traefik/whoami:latest
         ports:
         - containerPort: 80
