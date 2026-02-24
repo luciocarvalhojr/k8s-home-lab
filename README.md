@@ -7,9 +7,13 @@ This repository contains the configurations to bootstrap a complete Kubernetes h
 *TODO: It is recommended to add a diagram here showing how the components interact. For example:*
 
 `User -> Ingress -> App -> Database`
+
 `ExternalDNS -> Manages DNS for Ingress`
+
 `cert-manager -> Provides TLS for Ingress`
+
 `ArgoCD -> Manages all deployments`
+
 `Monitoring -> Scrapes metrics from all components`
 
 ## Prerequisites
