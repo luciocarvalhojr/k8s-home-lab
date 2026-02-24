@@ -4,17 +4,18 @@ This repository contains a collection of configurations for setting up a Kuberne
 
 ## Components
 
-| Component | Description |
-| --- | --- |
-| [**ArgoCD**](argocd/) | Installs and configures ArgoCD for GitOps-style continuous deployment. |
-| [**cert-manager**](cert-manager/) | Sets up cert-manager for automated TLS certificate management from various issuing sources. |
-| [**ExternalDNS**](external-dns/) | Configures ExternalDNS to automatically manage DNS records for your services and ingresses. |
-| [**IDP (authentik)**](idp/) | Deploys authentik as an Identity Provider for centralized authentication. |
-| [**k8s-apiserver-oidc**](k8s-apiserver-oidc/) | Configures the Kubernetes API server to use an OIDC provider for user authentication. |
-| [**MetalLB**](metallb/) | Installs MetalLB to provide LoadBalancer services for your bare-metal cluster. |
-| [**Monitoring**](monitoring/) | Sets up the kube-prometheus-stack for a complete cluster monitoring solution with Prometheus and Grafana. |
-| [**Headlamp**](my-headlamp/) | Installs Headlamp, a web-based UI for Kubernetes. |
-| [**StorageClass**](storageclass/) | Defines a StorageClass for persistent storage using the NFS CSI driver. |
+| Component | Installation Method | Description |
+| --- | --- | --- |
+| [**ArgoCD**](argocd/) | Helm | Installs and configures ArgoCD for GitOps-style continuous deployment. |
+| [**cert-manager**](cert-manager/) | Helm | Sets up cert-manager for automated TLS certificate management from various issuing sources. |
+| [**ExternalDNS**](external-dns/) | Helm | Configures ExternalDNS to automatically manage DNS records for your services and ingresses. |
+| [**IDP (authentik)**](idp/) | Helm | Deploys authentik as an Identity Provider for centralized authentication. |
+| [**k8s-apiserver-oidc**](k8s-apiserver-oidc/) | Direct Apply | Configures the Kubernetes API server to use an OIDC provider for user authentication. |
+| [**MetalLB**](metallb/) | Helm | Installs MetalLB to provide LoadBalancer services for your bare-metal cluster. |
+| [**Monitoring**](monitoring/) | Helm | Sets up the kube-prometheus-stack for a complete cluster monitoring solution with Prometheus and Grafana. |
+| [**Headlamp**](my-headlamp/) | Helm | Installs Headlamp, a web-based UI for Kubernetes. |
+| [**StorageClass**](storageclass/) | Direct Apply | Defines a StorageClass for persistent storage using the NFS CSI driver. |
+| [**Main Application**](base/) | Kustomize | The main application, deployed via ArgoCD. |
 
 ## Getting Started
 

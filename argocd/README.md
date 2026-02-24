@@ -1,52 +1,32 @@
 # ArgoCD
 
-This guide helps you install ArgoCD on your k3s cluster and configure access using Traefik.
+This document outlines the installation and configuration of ArgoCD, a declarative GitOps continuous delivery tool for Kubernetes.
 
-## Prerequisites
+## 1. Installation
 
-- A running Kubernetes cluster.
-- `kubectl` configured to access the cluster.
-- Traefik installed as an Ingress Controller (for IngressRoute access).
+1.  **Add the ArgoCD Helm repository:**
+    ```sh
+    helm repo add argo https://argoproj.github.io/argo-helm
+    helm repo update
+    ```
 
-## Installation
-
-1.  **Create the ArgoCD namespace:**
+2.  **Create the argocd namespace:**
     ```sh
     kubectl create namespace argocd
     ```
 
-2.  **Apply the official manifest:**
+3.  **Install ArgoCD using Helm:**
     ```sh
-    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    helm install argocd argo/argo-cd --namespace argocd -f argocd/values.yaml
     ```
 
-3.  **Expose the ArgoCD API Server.**
+## 2. Expose the ArgoCD API Server
 
-    You can use either port-forwarding for a quick test or an IngressRoute for a permanent solution.
+You can use either port-forwarding for a quick test or an IngressRoute for a permanent solution.
 
-    *   **Option 1: Port-forwarding**
-        ```sh
-        kubectl port-forward svc/argocd-server -n argocd 8080:443
-        ```
-        Access ArgoCD at `https://localhost:8080`.
+### Option 1: Port-forwarding
 
-    *   **Option 2: Traefik IngressRoute**
-        Apply the provided `argocd-ingressroute.yaml` configuration.
-        ```sh
-        kubectl apply -f argocd/argocd-ingressroute.yaml
-        ```
-        Ensure your DNS is configured to point `argocd.k3s.home.lan` to your cluster's IP.
-
-## Accessing ArgoCD
-
-1.  **Get the initial admin password:**
     ```sh
-    kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+    kubectl port-forward svc/argocd-server -n argocd 8080:443
     ```
-
-2.  **Access the ArgoCD UI.**
-    Open your Ingress address (e.g., `https://argocd.k3s.home.lan`) or `https://localhost:8080` if using port-forwarding. Login with the username `admin` and the password retrieved in the previous step.
-
-## References
-
-- [ArgoCD Official Documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/)
+    Access ArgoCD at `https://localhost:8080`.
