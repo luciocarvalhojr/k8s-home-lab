@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: traefik/whoami:latest
+        #image: traefik/whoami:latest
+        image: nginx:latest
         ports:
         - containerPort: 80
         env:
