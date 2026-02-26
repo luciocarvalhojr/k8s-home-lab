@@ -1,18 +1,12 @@
-# Age secret key
-mozilla-sops/age.key
-
 # Common secret files (unencrypted)
 # If you ever have unencrypted secrets you don't want to commit, add them here.
 # For SOPS, you'll commit the *encrypted* files, but this is for extra safety.
-# secrets.yaml
-# *.secrets.yaml
-# *.key
-# *.crt
-# *.pem
-# *.pfx
-# *.p12
+*.key
+*.crt
+*.pem
+*.pfx
+*.p12
 
 # Environment variables
-# .env
-# .flaskenv
-# .sops.env
+.env
+.flaskenv
