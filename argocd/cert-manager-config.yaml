@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-config
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
+    path: cert-manager/
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated: {}
