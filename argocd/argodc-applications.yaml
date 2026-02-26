@@ -9,6 +9,9 @@ spec:
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
     path: argocd/
     targetRevision: main
+    directory:
+      recurse: true
+      exclude: 'values.yaml'
   destination:
     server: https://kubernetes.default.svc
     namespace: default
