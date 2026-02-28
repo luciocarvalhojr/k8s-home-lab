@@ -12,10 +12,28 @@ This document provides instructions for installing Headlamp, a web-based UI for 
 
 This project includes example files for `values.yaml` and `ingress.yaml`.
 
-1.  **Configure `values.yaml`:**
+1.  **Seal your OIDC client secret:**
+    Create a `SealedSecret` for your OIDC client secret. Do not commit the unencrypted `secrets.yaml` file.
+    ```sh
+    kubectl create secret generic headlamp-oidc-secret \
+      --namespace default \
+      --from-literal=clientSecret='YOUR_OIDC_CLIENT_SECRET' \
+      --dry-run=client -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml > my-headlamp/secrets-sealed.yaml
+    ```
+    After sealing, you can apply the sealed secret:
+    ```sh
+    kubectl apply -f my-headlamp/secrets-sealed.yaml
+    ```
+    Then, update your `values.yaml` to reference this secret if supported, or ensure the chart uses it.
+
+2.  **Configure `values.yaml`:**
     The `my-headlamp/values.yaml` file contains the configuration for the Headlamp Helm chart. Review and customize it as needed.
 
-2.  **Configure Ingress:**
+3.  **Configure Ingress:**
     The `my-headlamp/ingress.yaml` file provides an example of how to expose Headlamp using an Ingress.
 
 ## Installation and Access

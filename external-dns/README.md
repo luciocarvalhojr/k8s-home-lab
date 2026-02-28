@@ -11,10 +11,21 @@ This document provides instructions for installing and configuring ExternalDNS, 
 
 ## Configuration
 
-1.  **Create a secret with your Cloudflare API Token:**
-    Modify the `secrets.yaml` file with your Cloudflare API token and apply it.
+1.  **Seal your Cloudflare API token secret:**
+    Create a `SealedSecret` for your Cloudflare API token. Do not commit the unencrypted `secrets.yaml` file.
     ```sh
-    kubectl apply -f external-dns/secrets.yaml
+    kubectl create secret generic cloudflare-api-token-secret \
+      --namespace external-dns \
+      --from-literal=api-token='YOUR_CLOUDFLARE_API_TOKEN' \
+      --dry-run=client -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml > external-dns/secrets-sealed.yaml
+    ```
+    After sealing, you can apply the sealed secret:
+    ```sh
+    kubectl apply -f external-dns/secrets-sealed.yaml
     ```
 
 2.  **Configure the `values.yaml` file:**

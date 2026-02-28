@@ -10,12 +10,23 @@ This document provides instructions for installing the kube-prometheus-stack, wh
 
 ## Configuration
 
-This project includes example files for `values.yaml` and `secrets.yaml`.
+This project includes example files for `values.yaml` and `secrets-sealed.yaml`.
 
-1.  **Create secrets for Grafana:**
-    Modify the `monitoring/secrets.yaml` file with your desired Grafana admin password and any other sensitive data. Then, apply the configuration.
+1.  **Seal your Grafana Authentik secret:**
+    Create a `SealedSecret` for your Grafana Authentik integration. Do not commit the unencrypted `secrets.yaml` file.
     ```sh
-    kubectl apply -f monitoring/secrets.yaml
+    kubectl create secret generic grafana-authentik \
+      --namespace monitoring \
+      --from-literal=client_secret='YOUR_AUTHENTIK_CLIENT_SECRET' \
+      --dry-run=client -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml > monitoring/secrets-sealed.yaml
+    ```
+    After sealing, you can apply the sealed secret:
+    ```sh
+    kubectl apply -f monitoring/secrets-sealed.yaml
     ```
 
 2.  **Configure `values.yaml`:**

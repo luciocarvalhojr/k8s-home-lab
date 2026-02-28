@@ -11,11 +11,29 @@ This document provides instructions for installing authentik, an open-source Ide
 
 ## Configuration
 
-The `idp/values.yaml` file contains the configuration for the authentik Helm chart. You should review and customize it to fit your environment. At a minimum, you must set the following values:
+The `idp/values.yaml` file contains the configuration for the authentik Helm chart. You should review and customize it to fit your environment.
 
--   `authentik.secret_key`: A securely generated secret key.
--   `authentik.postgresql.password`: A strong password for the PostgreSQL database.
--   `server.ingress.hosts`: The hostname for accessing the authentik UI.
+1.  **Seal your authentik secrets:**
+    At a minimum, you must set the `authentik.secret_key` and `authentik.postgresql.password`. Instead of putting them in `values.yaml`, it is recommended to seal them.
+    ```sh
+    kubectl create secret generic authentik-secrets \
+      --namespace default \
+      --from-literal=secret_key='YOUR_AUTHENTIK_SECRET_KEY' \
+      --from-literal=postgresql_password='YOUR_POSTGRES_PASSWORD' \
+      --dry-run=client -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml > idp/secrets-sealed.yaml
+    ```
+    After sealing, you can apply the sealed secret:
+    ```sh
+    kubectl apply -f idp/secrets-sealed.yaml
+    ```
+
+2.  **Configure `values.yaml`:**
+    Modify the `idp/values.yaml` file to reference these secrets if supported by the chart, or ensure you are not committing plain-text secrets there. At a minimum, set:
+    -   `server.ingress.hosts`: The hostname for accessing the authentik UI.
 
 ## Installation
 

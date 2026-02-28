@@ -53,14 +53,25 @@ To use GoDaddy for DNS-01 challenges, you need to install the GoDaddy webhook.
 
 This project includes examples for creating a `ClusterIssuer` and a wildcard `Certificate`.
 
-1.  **Create a secret with your Cloudflare API token:**
-    Modify the `secret.yaml` file with your Cloudflare API token and apply it.
+1.  **Seal your Cloudflare API token secret:**
+    Create a `SealedSecret` for your Cloudflare API token. Do not commit the unencrypted `secrets.yaml` file.
     ```sh
-    kubectl apply -f cert-manager/secret.yaml
+    kubectl create secret generic cloudflare-api-token-secret \
+      --namespace cert-manager \
+      --from-literal=api-token='YOUR_CLOUDFLARE_API_TOKEN' \
+      --dry-run=client -o yaml | \
+    kubeseal \
+      --controller-name=sealed-secrets \
+      --controller-namespace=sealed-secrets \
+      --format yaml > cert-manager/secrets-sealed.yaml
+    ```
+    After sealing, you can apply the sealed secret:
+    ```sh
+    kubectl apply -f cert-manager/secrets-sealed.yaml
     ```
 
 2.  **Create the ClusterIssuer:**
-    The `clusterissuer.yaml` file defines a `ClusterIssuer` that uses Cloudflare to solve DNS-01 challenges.
+    The `clusterissuer.yaml` file defines a `ClusterIssuer` that uses Cloudflare to solve DNS-01 challenges. It references the sealed secret created above.
     ```sh
     kubectl apply -f cert-manager/clusterissuer.yaml
     ```
