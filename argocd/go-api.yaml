@@ -8,7 +8,7 @@ spec:
     namespace: go-api
     server: https://kubernetes.default.svc
   sources:
-    - repoURL: https://github.com/luciocarvalhojr/helm-charts
+    - repoURL: https://luciocarvalhojr.github.io/helm-charts
       chart: go-api
       targetRevision: v0.1.0
   project: default
