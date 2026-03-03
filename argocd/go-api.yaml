@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: https://luciocarvalhojr.github.io/helm-charts
       chart: go-api
-      targetRevision: 0.1.0
+      targetRevision: 0.1.1
   project: default
   syncPolicy:
     automated:
