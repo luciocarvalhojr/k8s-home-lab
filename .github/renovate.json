@@ -6,13 +6,13 @@
   "argocd": {
     "enabled": true,
     "fileMatch": [
-      "argocd/.*\.yaml$"
+      "argocd/.*\\.yaml$"
     ]
   },
   "kubernetes": {
     "fileMatch": [
-      "base/.*\.yaml$",
-      "overlays/.*\.yaml$"
+      "base/.*\\.yaml$",
+      "overlays/.*\\.yaml$"
     ]
   },
   "packageRules": [
