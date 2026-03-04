@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "argocd": {
+    "enabled": true,
+    "fileMatch": [
+      "argocd/.*\.yaml$"
+    ]
+  },
+  "kubernetes": {
+    "fileMatch": [
+      "base/.*\.yaml$",
+      "overlays/.*\.yaml$"
+    ]
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
+  ]
+}
