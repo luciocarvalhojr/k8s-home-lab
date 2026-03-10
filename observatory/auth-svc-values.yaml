@@ -10,7 +10,21 @@ service:
   port: 8081
 
 ingress:
-  enabled: false             # auth-svc is internal only — accessed via api-gateway
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+    external-dns.alpha.kubernetes.io/hostname: observatory-auth.capihome.xyz
+  spec:
+    tls:
+      - hosts:
+          - observatory-auth.capihome.xyz
+        secretName: wildcard-capihome-xyz-tls
+    rules:
+      - host: observatory-auth.capihome.xyz
+        http:
+          paths:
+            - path: /
+              pathType: Prefix
 
 resources:
   requests:
