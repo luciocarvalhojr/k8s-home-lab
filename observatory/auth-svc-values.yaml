@@ -14,19 +14,17 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-cloudflare
     external-dns.alpha.kubernetes.io/hostname: observatory-auth.capihome.xyz
-  spec:
-    tls:
-      - hosts:
-          - observatory-auth.capihome.xyz
-        secretName: wildcard-capihome-xyz-tls
-    rules:
-      - host: observatory-auth.capihome.xyz
-        http:
-          paths:
-            - path: /
-              pathType: Prefix
+  hosts:
+    - host: observatory-auth.capihome.xyz
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - observatory-auth.capihome.xyz
+      secretName: wildcard-capihome-xyz-tls
 
-resources:
+
   requests:
     cpu: 50m
     memory: 64Mi
