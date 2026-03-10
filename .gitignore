@@ -6,6 +6,7 @@
 *.pem
 *.pfx
 *.p12
+.DS_Store
 
 # Environment variables
 .env

@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: auth-svc
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Chart from your Helm registry
+    - repoURL: https://luciocarvalhojr.github.io/helm-charts
+      chart: auth-svc
+      targetRevision: 0.1.0
+      helm:
+        valueFiles:
+          - $values/observatory/auth-svc-values.yaml
+
+    # Values from your k8s-home-lab repo
+    - repoURL: https://github.com/luciocarvalhojr/k8s-home-lab
+      targetRevision: main
+      ref: values
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observatory
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
