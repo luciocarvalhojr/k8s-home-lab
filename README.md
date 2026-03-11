@@ -4,17 +4,133 @@ This repository contains the configurations to bootstrap a complete Kubernetes h
 
 ## Architecture
 
-*TODO: It is recommended to add a diagram here showing how the components interact. For example:*
+```
+                          ┌─────────────────────────────────────────┐
+                          │            Internet / User               │
+                          └────────────────┬────────────────────────┘
+                                           │ HTTPS *.capihome.xyz
+                                           ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│  Home Network / Bare-Metal Cluster (k3s)                                     │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
+│  │  MetalLB  (metallb-system)                                          │     │
+│  │  LoadBalancer IP pool: 192.168.0.161–192.168.0.165                  │     │
+│  └────────────────────────────┬────────────────────────────────────────┘     │
+│                               │                                              │
+│                               ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐     │
+│  │  Traefik  (kube-system)   — Ingress Controller                      │     │
+│  │  Terminates TLS · Routes traffic by hostname                        │     │
+│  └──┬──────────┬──────────┬──────────┬──────────┬──────────┬──────────┘     │
+│     │          │          │          │          │          │                  │
+│     ▼          ▼          ▼          ▼          ▼          ▼                  │
+│  argocd    grafana   auth(IDP)  headlamp  obs-auth   myapp / go-api          │
+│  .capiho…  .capiho…  .capiho…  .capiho…  .capiho…   .capiho…                │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│  GitOps & Secret Management                                                  │
+│                                                                              │
+│  ┌──────────────────────────┐     ┌──────────────────────────────────┐       │
+│  │  ArgoCD  (argocd)        │────▶│  GitHub: k8s-home-lab (main)     │       │
+│  │  argocd.capihome.xyz     │     │  App-of-Apps pattern             │       │
+│  │  OIDC via Authentik      │     └──────────────────────────────────┘       │
+│  └────────────┬─────────────┘                                                │
+│               │ manages all apps below                                       │
+│               ▼                                                              │
+│  ┌──────────────────────────┐                                                │
+│  │  Sealed Secrets          │  ← Controller decrypts SealedSecrets in git   │
+│  │  (sealed-secrets ns)     │    and creates real K8s Secrets in cluster     │
+│  └──────────────────────────┘                                                │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│  DNS & TLS                                                                   │
+│                                                                              │
+│  ┌──────────────────────────┐     ┌──────────────────────────────────┐       │
+│  │  ExternalDNS (kube-sys)  │────▶│  Cloudflare DNS  (capihome.xyz)  │       │
+│  │  Watches Ingress/Service │     └──────────────────────────────────┘       │
+│  │  → creates DNS records   │                    ▲                           │
+│  └──────────────────────────┘                    │ DNS-01 challenge          │
+│  ┌──────────────────────────┐                    │                           │
+│  │  cert-manager (cert-mgr) │────────────────────┘                          │
+│  │  Let's Encrypt via       │  wildcard cert: *.capihome.xyz                │
+│  │  Cloudflare DNS-01       │                                                │
+│  └──────────────────────────┘                                                │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│  Identity Provider                                                           │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐      │
+│  │  Authentik  (idp)           auth.capihome.xyz                      │      │
+│  │  SSO / OIDC for: ArgoCD · Grafana · Headlamp · Observatory · k8s  │      │
+│  │  PostgreSQL + Redis (internal)                                     │      │
+│  └────────────────────────────────────────────────────────────────────┘      │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│  Monitoring                                                                  │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────┐                    │
+│  │  kube-prometheus-stack  (monitoring)                 │                    │
+│  │  Prometheus  — scrapes all cluster metrics           │                    │
+│  │  Grafana     — grafana.capihome.xyz  (OIDC login)    │                    │
+│  │  Alertmanager                                        │                    │
+│  └──────────────────────────────────────────────────────┘                    │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│  Storage                                                                     │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────┐                    │
+│  │  NFS CSI Driver  (kube-system)                       │                    │
+│  │  StorageClass: nfs-rwx  (ReadWriteMany)              │◀── Authentik PG   │
+│  └──────────────────────────────────────────────────────┘                    │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│  Applications                                                                │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────┐         │
+│  │  Observatory  (observatory)                                     │         │
+│  │                                                                 │         │
+│  │  auth-svc  observatory-auth.capihome.xyz                        │         │
+│  │  ├── OIDC auth via Authentik                                    │         │
+│  │  ├── Issues JWT tokens                                          │         │
+│  │  └── Redis  (internal cache)                                    │         │
+│  └─────────────────────────────────────────────────────────────────┘         │
+│                                                                              │
+│  ┌─────────────────────┐  ┌───────────────────────────┐                     │
+│  │  Headlamp (default) │  │  go-api  (go-api)          │                     │
+│  │  my-headlamp.capi…  │  │  Helm chart from own repo  │                     │
+│  │  K8s UI (OIDC)      │  └───────────────────────────┘                     │
+│  └─────────────────────┘                                                     │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────┐         │
+│  │  myapp  (default)  — myapp.capihome.xyz                         │         │
+│  │  Kustomize base/overlays pattern (prod overlay active)          │         │
+│  └─────────────────────────────────────────────────────────────────┘         │
+│                                                                              │
+│  ─────────────────────────────────────────────────────────────────────────  │
+│  Kubernetes API Access                                                       │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────┐         │
+│  │  k8s-apiserver-oidc  (kube-system)                              │         │
+│  │  ClusterRoleBinding → kubectl login via Authentik OIDC          │         │
+│  └─────────────────────────────────────────────────────────────────┘         │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
 
-`User -> Ingress -> App -> Database`
+### Namespace Map
 
-`ExternalDNS -> Manages DNS for Ingress`
-
-`cert-manager -> Provides TLS for Ingress`
-
-`ArgoCD -> Manages all deployments`
-
-`Monitoring -> Scrapes metrics from all components`
+| Namespace | Components |
+|-----------|-----------|
+| `argocd` | ArgoCD (GitOps controller) |
+| `sealed-secrets` | Sealed Secrets controller |
+| `cert-manager` | cert-manager + ClusterIssuer |
+| `kube-system` | Traefik, MetalLB, ExternalDNS, NFS CSI driver, OIDC RBAC |
+| `metallb-system` | MetalLB controller + speaker |
+| `monitoring` | Prometheus, Grafana, Alertmanager |
+| `idp` | Authentik (SSO) + PostgreSQL + Redis |
+| `observatory` | auth-svc + Redis |
+| `go-api` | go-api |
+| `default` | myapp, Headlamp |
 
 ## Prerequisites
 
