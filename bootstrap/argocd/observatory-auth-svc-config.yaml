@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
     targetRevision: main
-    path: observatory/
+    path: apps/observatory/
     directory:
       recurse: false
       exclude: '*-values.yaml'

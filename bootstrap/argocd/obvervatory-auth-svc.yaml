@@ -12,7 +12,7 @@ spec:
       targetRevision: 0.1.2
       helm:
         valueFiles:
-          - $values/observatory/auth-svc-values.yaml
+          - $values/apps/observatory/auth-svc-values.yaml
 
     # Values from your k8s-home-lab repo
     - repoURL: https://github.com/luciocarvalhojr/k8s-home-lab

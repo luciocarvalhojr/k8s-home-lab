@@ -1,17 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argo-applications
+  name: myapp
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
-    path: argocd/
-    targetRevision: main
-    directory:
-      recurse: true
-      exclude: 'values.yaml'
+    path: apps/myapp/overlays/prod
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: default
