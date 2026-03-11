@@ -1,0 +1,76 @@
+# Pre-commit hooks for k8s GitOps repositories
+#
+# Setup:
+#   brew install pre-commit kubeconform
+#   pre-commit install          # installs the git hook
+#
+# Run manually against all files:
+#   pre-commit run --all-files
+#
+# Update hooks to latest versions:
+#   pre-commit autoupdate
+#
+# NOTE: checkov and kube-linter run only in GitHub Actions CI (too slow for local use)
+
+default_stages: [pre-commit]
+
+repos:
+  # ─── General file hygiene ────────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^(helm-charts/|charts/)  # let Helm handle its own templates
+      - id: detect-private-key            # fast local secret check
+      - id: no-commit-to-branch
+        args: [--branch, main]
+
+  # ─── YAML linting ────────────────────────────────────────────────────────────
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: [-c, .yamllint.yaml]
+
+  # ─── Secret leak detection ───────────────────────────────────────────────────
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.0
+    hooks:
+      - id: gitleaks
+
+  # ─── Kubernetes manifest validation ─────────────────────────────────────────
+  # Requires kubeconform installed locally: brew install kubeconform
+  - repo: local
+    hooks:
+      - id: kubeconform
+        name: kubeconform
+        language: system
+        entry: kubeconform
+        args:
+          - -strict
+          - -ignore-missing-schemas
+          - -schema-location
+          - default
+          - -schema-location
+          - "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+        types: [yaml]
+        exclude: >-
+          (?x)(
+            \.github/|
+            bootstrap/argocd/|
+            apps/myapp/overlays/|
+            values\.yaml$|
+            kustomization\.yaml$|
+            sealedsecret-config\.yaml$|
+            -sealed-secret\.yaml$|
+            secrets-sealed\.yaml$|
+            \.pre-commit-config\.yaml$|
+            \.yamllint\.yaml$|
+            \.kube-linter\.yaml$
+          )

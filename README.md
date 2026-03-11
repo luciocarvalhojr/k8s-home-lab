@@ -141,6 +141,12 @@ Before you begin, ensure you have the following installed and configured:
 *   `helm` (v3+)
 *   `kustomize` (v4+)
 *   `kubeseal` CLI — for sealing secrets before committing them.
+*   `pre-commit` — for local lint, validation, and secret scanning. See [docs/pre-commit.md](docs/pre-commit.md).
+
+```sh
+brew install pre-commit
+pre-commit install   # run once after cloning
+```
 
 ## Repository Structure
 
