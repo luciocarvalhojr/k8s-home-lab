@@ -9,7 +9,7 @@ spec:
     # Chart from your Helm registry
     - repoURL: https://luciocarvalhojr.github.io/helm-charts
       chart: auth-svc
-      targetRevision: 0.1.3
+      targetRevision: 0.1.2
       helm:
         valueFiles:
           - $values/observatory/auth-svc-values.yaml
