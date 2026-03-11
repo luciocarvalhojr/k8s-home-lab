@@ -11,14 +11,14 @@ The production environment uses a sealed secret for database credentials.
 To update or create the sealed secret:
 
 ```sh
-kubectl create secret generic db-credentials 
-  --namespace prod 
-  --from-literal=username='admin' 
-  --from-literal=password='YOUR_SAFE_PASSWORD' 
-  --dry-run=client -o yaml | 
-kubeseal 
-  --controller-name=sealed-secrets 
-  --controller-namespace=sealed-secrets 
+kubectl create secret generic db-credentials
+  --namespace prod
+  --from-literal=username='admin'
+  --from-literal=password='YOUR_SAFE_PASSWORD'
+  --dry-run=client -o yaml |
+kubeseal
+  --controller-name=sealed-secrets
+  --controller-namespace=sealed-secrets
   --format yaml > apps/myapp/overlays/prod/secrets/secrets-db-sealed.yaml
 ```
 

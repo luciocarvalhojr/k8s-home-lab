@@ -4,7 +4,7 @@ config:
     clientSecret: "qiylOjjsXwH9M5xmvoiC9Q67oNQyanIB3OLRWcMsQ2hsjJsv4rFzahY3SYezLvnVQcjxiKbVGubjY9Mwg4urHuSmcWue4BPq6mpFp4yj9RO2aW3fhUjvji0ALjgs5s1N"
     issuerURL: "https://auth.capihome.xyz/application/o/kube-apiserver/"
     scopes: "openid,profile,email,groups"
-    #meUserInfoURL: "https://my-headlamp.capihome.xyz/oauth2/userinfo"
+    # meUserInfoURL: "https://my-headlamp.capihome.xyz/oauth2/userinfo"
   extraArgs:
     - --oidc-skip-tls-verify
     - --insecure-ssl
