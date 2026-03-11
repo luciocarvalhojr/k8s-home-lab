@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
-    path: external-dns/
+    path: infrastructure/external-dns/
     targetRevision: main
   syncPolicy:
     automated: {}

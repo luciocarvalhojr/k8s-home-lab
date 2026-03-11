@@ -13,7 +13,7 @@ spec:
       targetRevision: v1.19.2
       helm:
         valueFiles:
-          - $values/cert-manager/values.yaml
+          - $values/infrastructure/cert-manager/values.yaml
     - repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
       targetRevision: main
       ref: values

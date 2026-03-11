@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
-    path: cert-manager/
+    path: infrastructure/cert-manager/
     targetRevision: main
   destination:
     server: https://kubernetes.default.svc

@@ -6,6 +6,19 @@ server:
     type: ClusterIP
 
 configs:
+  cm:
+    oidc.config: |
+      name: OIDC
+      issuer: https://auth.capihome.xyz/application/o/argodc/
+      clientID: argodc
+      clientSecret: ZyAzxpXlRKAYBIkItkOpEHxY9SMvA4qg55GLRqKIt4UatFnRUXIhmUxOUmVhPkAAhXwsxM5awKdVRmKnTqVV89PTpE94dh90hM1afG3PmQ5vxYu5Yg6dwA53WBDIlc0l
+      enableUserInfoGroups: true
+      requestedScopes: ["openid", "profile", "email", "groups"]
+  rbac:
+    policy.default: role:readonly    # default role for all authenticated users
+    policy.csv: |
+      # Admins group from Authentik gets full access
+      g, argocd-admins, role:admin
   params:
     server.insecure: true
 

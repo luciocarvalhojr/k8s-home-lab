@@ -13,7 +13,7 @@ spec:
       targetRevision: 82.1.1
       helm:
         valueFiles:
-          - $values/monitoring/values.yaml
+          - $values/infrastructure/monitoring/values.yaml
     - repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
       targetRevision: main
       ref: values
