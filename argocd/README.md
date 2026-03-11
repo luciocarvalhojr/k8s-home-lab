@@ -24,27 +24,20 @@ This document outlines the installation and configuration of ArgoCD, a declarati
 
 ### OIDC Integration
 
-If you are using an OIDC provider (like authentik), you should seal the client secret.
+ArgoCD is configured to use authentik as an OIDC provider via `argocd/values.yaml`.
 
-1.  **Seal your OIDC client secret:**
-    Create a `SealedSecret` for your OIDC client secret.
-    ```sh
-    kubectl create secret generic argocd-oidc-secret \
-      --namespace argocd \
-      --from-literal=clientSecret='YOUR_OIDC_CLIENT_SECRET' \
-      --dry-run=client -o yaml | \
-    kubeseal \
-      --controller-name=sealed-secrets \
-      --controller-namespace=sealed-secrets \
-      --format yaml > argocd/secrets-sealed.yaml
-    ```
-    After sealing, you can apply the sealed secret:
-    ```sh
-    kubectl apply -f argocd/secrets-sealed.yaml
-    ```
+> **Warning:** `argocd/values.yaml` currently contains the `clientSecret` in plaintext. This should be sealed before committing to a public repository.
 
-2.  **Update `values.yaml`:**
-    Ensure your `argocd/values.yaml` references this secret instead of containing the plain-text secret.
+To seal the OIDC client secret:
+
+```sh
+echo -n "YOUR_OIDC_CLIENT_SECRET" | kubeseal --raw \
+  --name argocd-secret \
+  --namespace argocd \
+  --cert sealed-secrets.pem
+```
+
+Then replace the plaintext `clientSecret` in `values.yaml` with a reference to a `SealedSecret`, or store it as a sealed secret and reference it via `$oidc.authentik.clientSecret` in the ArgoCD config.
 
 ## 3. Expose the ArgoCD API Server
 

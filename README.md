@@ -24,8 +24,7 @@ Before you begin, ensure you have the following installed and configured:
 *   `kubectl` pointing to your cluster.
 *   `helm` (v3+)
 *   `kustomize` (v4+)
-*   `sops` for secret decryption.
-*   An `age.agekey` file in the root of this repository with the key used to encrypt the SOPS secrets.
+*   `kubeseal` CLI — for sealing secrets before committing them.
 
 ## Repository Structure
 
@@ -33,7 +32,7 @@ Before you begin, ensure you have the following installed and configured:
 *   `base/`: Kustomize base for a sample application.
 *   `overlays/`: Kustomize overlays for different environments (e.g., `dev`, `prod`).
 *   `cert-manager/`, `external-dns/`, etc.: Each directory is a self-contained component deployed as a Helm chart or Kubernetes manifests. Each has its own `README.md` for specific details.
-*   `.sops.yaml`: Configuration file for SOPS encryption.
+*   `sealed-secrets.pem`: The cluster's public key used to seal secrets with `kubeseal`.
 
 ## Deployment Workflow
 
@@ -46,16 +45,14 @@ This setup is designed to be managed by ArgoCD. The recommended deployment proce
     ```
 
 2.  **Prepare Secrets:**
-    The secrets in this repository are encrypted with SOPS. To decrypt them, you need the corresponding `age` private key.
-    *   Place your private key in a file named `age.agekey` in the project root.
-    *   To view a secret, run:
-        ```sh
-        sops -d path/to/secret.yaml
-        ```
-    *   To edit a secret, run:
-        ```sh
-        sops path/to/secret.yaml
-        ```
+    Secrets in this repository are encrypted using [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets). The `sealed-secrets-controller` running in the cluster holds the private key and decrypts them automatically. To seal a new secret:
+    ```sh
+    echo -n "your-secret-value" | kubeseal --raw \
+      --name <secret-name> \
+      --namespace <namespace> \
+      --cert sealed-secrets.pem
+    ```
+    See each component's `README.md` and its `*-sealed-secret.yaml` / `secrets-sealed.yaml` for details.
 
 3.  **Install ArgoCD:**
     First, you need to install ArgoCD itself into the cluster. This is a manual, one-time step.
@@ -68,9 +65,9 @@ This setup is designed to be managed by ArgoCD. The recommended deployment proce
     Once ArgoCD is running, you apply the root application, which tells ArgoCD to manage all other applications defined in this repository.
     ```sh
     # Ensure you are in the root of the repository
-    kubectl apply -f argocd/argocd-apps-cleaned.yaml
+    kubectl apply -f argocd/argodc-applications.yaml
     ```
-    ArgoCD will now start deploying all the components listed in `argocd-apps-cleaned.yaml`. You can monitor the progress from the ArgoCD UI.
+    ArgoCD will now start deploying all the components listed in `argodc-applications.yaml`. You can monitor the progress from the ArgoCD UI.
 
 ## Accessing Your Lab
 

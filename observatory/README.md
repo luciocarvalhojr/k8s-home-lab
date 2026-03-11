@@ -34,9 +34,9 @@ Kubernetes `Secret` resources are only base64-encoded — not encrypted. Committ
 │                                                                      │
 │  ┌─────────────────────────────┐                                     │
 │  │ SealedSecret: auth-svc-secret│                                    │
-│  │  OIDC_CLIENT_SECRET: AgB…   │                                     │
-│  │  JWT_SECRET: AgC…           │                                     │
-│  │  REDIS_URL: AgD…            │                                     │
+│  │  OIDC_CLIENT_SECRET: AgB…   │  ← sealed                          │
+│  │  JWT_SECRET: (pending seal) │  ← TODO                            │
+│  │  REDIS_URL: AgD…            │  ← sealed                          │
 │  └──────────────┬──────────────┘                                     │
 │                 │  sealed-secrets-controller decrypts                │
 │                 ▼                                                    │

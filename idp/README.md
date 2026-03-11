@@ -14,26 +14,27 @@ This document provides instructions for installing authentik, an open-source Ide
 The `idp/values.yaml` file contains the configuration for the authentik Helm chart. You should review and customize it to fit your environment.
 
 1.  **Seal your authentik secrets:**
-    At a minimum, you must set the `authentik.secret_key` and `authentik.postgresql.password`. Instead of putting them in `values.yaml`, it is recommended to seal them.
+
+    > **Warning:** `idp/values.yaml` currently contains `authentik.secret_key` and `authentik.postgresql.password` in plaintext. These must be sealed before committing to a public repository.
+
+    Seal each value using the cluster's public key:
     ```sh
-    kubectl create secret generic authentik-secrets \
-      --namespace default \
-      --from-literal=secret_key='YOUR_AUTHENTIK_SECRET_KEY' \
-      --from-literal=postgresql_password='YOUR_POSTGRES_PASSWORD' \
-      --dry-run=client -o yaml | \
-    kubeseal \
-      --controller-name=sealed-secrets \
-      --controller-namespace=sealed-secrets \
-      --format yaml > idp/secrets-sealed.yaml
-    ```
-    After sealing, you can apply the sealed secret:
-    ```sh
-    kubectl apply -f idp/secrets-sealed.yaml
+    echo -n "YOUR_AUTHENTIK_SECRET_KEY" | kubeseal --raw \
+      --name authentik-secrets \
+      --namespace idp \
+      --cert sealed-secrets.pem
+
+    echo -n "YOUR_POSTGRES_PASSWORD" | kubeseal --raw \
+      --name authentik-secrets \
+      --namespace idp \
+      --cert sealed-secrets.pem
     ```
 
+    Create `idp/secrets-sealed.yaml` with the encrypted values as a `SealedSecret` resource, following the same pattern as `cert-manager/secrets-sealed.yaml` or `observatory/auth-svc-sealed-secret.yaml`.
+
 2.  **Configure `values.yaml`:**
-    Modify the `idp/values.yaml` file to reference these secrets if supported by the chart, or ensure you are not committing plain-text secrets there. At a minimum, set:
-    -   `server.ingress.hosts`: The hostname for accessing the authentik UI.
+    Modify the `idp/values.yaml` file to reference secrets instead of containing plain-text values. At a minimum, set:
+    -   `server.ingress.hosts`: The hostname for accessing the authentik UI (currently `auth.capihome.xyz`).
 
 ## Installation
 
