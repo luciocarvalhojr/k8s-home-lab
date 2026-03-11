@@ -1,0 +1,8 @@
+checks:
+  addAllBuiltIn: true
+  exclude:
+    - unset-cpu-requirements     # home-lab: relaxed resource management
+    - unset-memory-requirements  # home-lab: relaxed resource management
+    - no-read-only-root-fs       # some charts don't support this yet
+    - run-as-non-root            # some charts run as root
+customChecks: []

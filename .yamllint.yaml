@@ -1,0 +1,24 @@
+extends: default
+
+rules:
+  line-length:
+    max: 150
+    level: warning  # sealed secret values are long — warn, don't error
+  indentation:
+    spaces: 2
+    indent-sequences: whatever  # allow K8s style: list items at same level as parent key
+    check-multi-line-strings: false
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  braces:
+    max-spaces-inside: 1
+  brackets:
+    max-spaces-inside: 1
+  document-start: disable  # ArgoCD/Helm files often omit ---
+
+ignore: |
+  .github/
+  charts/
