@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
-    path: k8s-apiserver-oidc/
+    path: identity/k8s-apiserver-oidc/
     targetRevision: main
   syncPolicy:
     automated: {}
