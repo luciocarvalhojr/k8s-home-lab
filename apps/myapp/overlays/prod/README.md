@@ -19,13 +19,13 @@ kubectl create secret generic db-credentials
 kubeseal 
   --controller-name=sealed-secrets 
   --controller-namespace=sealed-secrets 
-  --format yaml > overlays/prod/secrets/secrets-db-sealed.yaml
+  --format yaml > apps/myapp/overlays/prod/secrets/secrets-db-sealed.yaml
 ```
 
 Apply the sealed secret:
 
 ```sh
-kubectl apply -f overlays/prod/secrets/secrets-db-sealed.yaml
+kubectl apply -f apps/myapp/overlays/prod/secrets/secrets-db-sealed.yaml
 ```
 
 ## Configuration

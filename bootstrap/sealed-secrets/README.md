@@ -21,7 +21,7 @@ This document provides instructions for installing and configuring Sealed Secret
     ```sh
     helm install sealed-secrets sealed-secrets/sealed-secrets \
         --namespace sealed-secrets --create-namespace \
-        -f sealedsecrets/values.yaml
+        -f bootstrap/sealed-secrets/values.yaml
     ```
     This command installs the Sealed Secrets controller in the `sealed-secrets` namespace.
 
@@ -65,7 +65,7 @@ kubectl create secret generic db-credentials \
   --from-literal=password='S3cr3t!' \
   --dry-run=client -o yaml | \
 kubeseal --cert sealed-secrets.pem --scope cluster-wide \
-        --format yaml > base/secrets-db-sealed.yaml
+        --format yaml > apps/myapp/overlays/prod/secrets/secrets-db-sealed.yaml
 ```
 
 ### 4. Apply the Sealed Secret

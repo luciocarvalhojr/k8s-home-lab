@@ -34,9 +34,9 @@ This document provides instructions for installing and configuring MetalLB, a lo
     ```
 
 5.  **Configure the address pool:**
-    Modify the `metallb/configmap.yaml` file to define the IP address range that MetalLB will manage. Then, apply the configuration.
+    Modify the `bootstrap/metallb/configmap.yaml` file to define the IP address range that MetalLB will manage. Then, apply the configuration.
     ```sh
-    kubectl apply -f metallb/configmap.yaml -n metallb-system
+    kubectl apply -f bootstrap/metallb/configmap.yaml -n metallb-system
     ```
 
 6.  **Verify the installation:**

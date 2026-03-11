@@ -21,11 +21,11 @@ This document provides instructions for installing and configuring ExternalDNS, 
     kubeseal \
       --controller-name=sealed-secrets \
       --controller-namespace=sealed-secrets \
-      --format yaml > external-dns/secrets-sealed.yaml
+      --format yaml > infrastructure/external-dns/secrets-sealed.yaml
     ```
     After sealing, you can apply the sealed secret:
     ```sh
-    kubectl apply -f external-dns/secrets-sealed.yaml
+    kubectl apply -f infrastructure/external-dns/secrets-sealed.yaml
     ```
 
 2.  **Configure the `values.yaml` file:**
@@ -41,7 +41,7 @@ This document provides instructions for installing and configuring ExternalDNS, 
 
 2.  **Install ExternalDNS:**
     ```sh
-    helm upgrade --install external-dns external-dns/external-dns --values external-dns/values.yaml
+    helm upgrade --install external-dns external-dns/external-dns --values infrastructure/external-dns/values.yaml
     ```
     This command installs ExternalDNS using the configuration from your `values.yaml` file.
 

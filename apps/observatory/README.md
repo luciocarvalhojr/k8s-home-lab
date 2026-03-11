@@ -18,11 +18,11 @@ Kubernetes `Secret` resources are only base64-encoded — not encrypted. Committ
 ┌──────────────────────────────────────────────────────────────────────┐
 │  Git Repository (k8s-home-lab)                                       │
 │                                                                      │
-│  observatory/                                                        │
+│  apps/observatory/                                                   │
 │  ├── auth-svc-values.yaml          ← Helm values (non-secret)        │
 │  └── auth-svc-sealed-secret.yaml   ← Encrypted SealedSecret (safe)  │
 │                                                                      │
-│  argocd/                                                             │
+│  bootstrap/argocd/                                                   │
 │  ├── obvervatory-auth-svc.yaml     ← ArgoCD app (Helm chart)         │
 │  └── observatory-auth-svc-config.yaml  ← ArgoCD app (raw manifests) │
 └───────────────────────┬──────────────────────────────────────────────┘
@@ -63,8 +63,8 @@ Kubernetes `Secret` resources are only base64-encoded — not encrypted. Committ
 
 | App | File | What it deploys |
 |-----|------|-----------------|
-| `auth-svc` | `argocd/obvervatory-auth-svc.yaml` | Helm chart — Deployment, Service, Ingress, ConfigMap |
-| `observatory-auth-svc-config` | `argocd/observatory-auth-svc-config.yaml` | Raw manifests from `observatory/` — the SealedSecret |
+| `auth-svc` | `bootstrap/argocd/obvervatory-auth-svc.yaml` | Helm chart — Deployment, Service, Ingress, ConfigMap |
+| `observatory-auth-svc-config` | `bootstrap/argocd/observatory-auth-svc-config.yaml` | Raw manifests from `apps/observatory/` — the SealedSecret |
 
 The Helm chart is configured with `externalSecret: true` in `auth-svc-values.yaml`, which tells it **not to create the `auth-svc-secret` Kubernetes Secret**. That Secret is owned entirely by the SealedSecret.
 
@@ -116,7 +116,7 @@ The `--name` and `--namespace` flags are important — the encrypted value is **
 
 ### Add it to the SealedSecret
 
-Open `observatory/auth-svc-sealed-secret.yaml` and add the key under `spec.encryptedData`:
+Open `apps/observatory/auth-svc-sealed-secret.yaml` and add the key under `spec.encryptedData`:
 
 ```yaml
 spec:
@@ -131,12 +131,12 @@ Commit and push. ArgoCD will sync and the `sealed-secrets-controller` will updat
 ## Adding a New Secret Key (End-to-End)
 
 1. **Seal the value** using the command above
-2. **Add the encrypted key** to `observatory/auth-svc-sealed-secret.yaml`
+2. **Add the encrypted key** to `apps/observatory/auth-svc-sealed-secret.yaml`
 3. **If it's a new env var**, update the Helm chart (`helm-charts` repo):
    - Add the key to the Secret template in `templates/service.yaml` (inside the `{{- if not .Values.externalSecret }}` block, for dev use)
    - Add the key with an empty default in `values.yaml` under `secrets:`
    - Bump the chart version
-4. **Update `argocd/obvervatory-auth-svc.yaml`** with the new chart version
+4. **Update `bootstrap/argocd/obvervatory-auth-svc.yaml`** with the new chart version
 5. **Commit and push** — ArgoCD handles the rest
 
 ---
@@ -146,10 +146,10 @@ Commit and push. ArgoCD will sync and the `sealed-secrets-controller` will updat
 ```
 k8s-home-lab/
 ├── sealed-secrets.pem                          ← cluster public key (seal with this)
-├── observatory/
+├── apps/observatory/
 │   ├── auth-svc-values.yaml                    ← Helm values (externalSecret: true set here)
 │   └── auth-svc-sealed-secret.yaml             ← SealedSecret (safe to commit)
-└── argocd/
+└── bootstrap/argocd/
     ├── obvervatory-auth-svc.yaml               ← ArgoCD Helm app
     └── observatory-auth-svc-config.yaml        ← ArgoCD raw-manifest app
 ```

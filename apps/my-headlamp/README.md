@@ -14,7 +14,7 @@ This project includes example files for `values.yaml` and `ingress.yaml`.
 
 1.  **Seal your OIDC client secret:**
 
-    > **Warning:** `my-headlamp/values.yaml` currently contains `config.oidc.clientSecret` in plaintext. This must be sealed before committing to a public repository.
+    > **Warning:** `apps/my-headlamp/values.yaml` currently contains `config.oidc.clientSecret` in plaintext. This must be sealed before committing to a public repository.
 
     Seal the value using the cluster's public key:
     ```sh
@@ -24,13 +24,13 @@ This project includes example files for `values.yaml` and `ingress.yaml`.
       --cert sealed-secrets.pem
     ```
 
-    Create `my-headlamp/secrets-sealed.yaml` with the encrypted value as a `SealedSecret` resource, following the same pattern as `observatory/auth-svc-sealed-secret.yaml`.
+    Create `apps/my-headlamp/secrets-sealed.yaml` with the encrypted value as a `SealedSecret` resource, following the same pattern as `apps/observatory/auth-svc-sealed-secret.yaml`.
 
 2.  **Configure `values.yaml`:**
-    The `my-headlamp/values.yaml` file contains the configuration for the Headlamp Helm chart. Review and customize it as needed.
+    The `apps/my-headlamp/values.yaml` file contains the configuration for the Headlamp Helm chart. Review and customize it as needed.
 
 3.  **Configure Ingress:**
-    The `my-headlamp/ingress.yaml` file provides an example of how to expose Headlamp using an Ingress.
+    The `apps/my-headlamp/ingress.yaml` file provides an example of how to expose Headlamp using an Ingress.
 
 ## Installation and Access
 
@@ -42,7 +42,7 @@ This project includes example files for `values.yaml` and `ingress.yaml`.
 
 2.  **Install Headlamp:**
     ```sh
-    helm install my-headlamp headlamp/headlamp -f my-headlamp/values.yaml
+    helm install my-headlamp headlamp/headlamp -f apps/my-headlamp/values.yaml
     ```
 
 3.  **Access Headlamp:**
@@ -57,7 +57,7 @@ This project includes example files for `values.yaml` and `ingress.yaml`.
     *   **Option 2: Ingress**
         Apply the `ingress.yaml` file.
         ```sh
-        kubectl apply -f my-headlamp/ingress.yaml
+        kubectl apply -f apps/my-headlamp/ingress.yaml
         ```
         Access Headlamp at the hostname specified in the Ingress.
 

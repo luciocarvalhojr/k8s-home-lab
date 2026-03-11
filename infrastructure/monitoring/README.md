@@ -22,15 +22,15 @@ This project includes example files for `values.yaml` and `secrets-sealed.yaml`.
     kubeseal \
       --controller-name=sealed-secrets \
       --controller-namespace=sealed-secrets \
-      --format yaml > monitoring/secrets-sealed.yaml
+      --format yaml > infrastructure/monitoring/secrets-sealed.yaml
     ```
     After sealing, you can apply the sealed secret:
     ```sh
-    kubectl apply -f monitoring/secrets-sealed.yaml
+    kubectl apply -f infrastructure/monitoring/secrets-sealed.yaml
     ```
 
 2.  **Configure `values.yaml`:**
-    The `monitoring/values.yaml` file contains the configuration for the kube-prometheus-stack Helm chart. Review and customize it as needed.
+    The `infrastructure/monitoring/values.yaml` file contains the configuration for the kube-prometheus-stack Helm chart. Review and customize it as needed.
 
 ## Installation
 
@@ -49,7 +49,7 @@ This project includes example files for `values.yaml` and `secrets-sealed.yaml`.
     ```sh
     helm install monitoring prometheus-community/kube-prometheus-stack \
       --namespace monitoring \
-      -f monitoring/values.yaml
+      -f infrastructure/monitoring/values.yaml
     ```
 
 4.  **Verify the installation:**

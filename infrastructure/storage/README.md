@@ -27,15 +27,15 @@ This document provides instructions for installing and configuring the NFS CSI (
     ```
 
 3.  **Create the StorageClass:**
-    The `storageclass/storageclass.yaml` file defines a `StorageClass` that uses the NFS CSI driver. Modify the `server` and `share` parameters in the file to point to your NFS server. Then, apply the configuration.
+    The `infrastructure/storage/storageclass.yaml` file defines a `StorageClass` that uses the NFS CSI driver. Modify the `server` and `share` parameters in the file to point to your NFS server. Then, apply the configuration.
     ```sh
-    kubectl apply -f storageclass/storageclass.yaml
+    kubectl apply -f infrastructure/storage/storageclass.yaml
     ```
 
 4.  **Create a PersistentVolumeClaim (PVC):**
-    The `storageclass/pvc-example.yaml` file provides an example of how to create a `PersistentVolumeClaim` that uses the `nfs-csi` StorageClass.
+    The `infrastructure/storage/pvc-example.yaml` file provides an example of how to create a `PersistentVolumeClaim` that uses the `nfs-csi` StorageClass.
     ```sh
-    kubectl apply -f storageclass/pvc-example.yaml
+    kubectl apply -f infrastructure/storage/pvc-example.yaml
     ```
     You can now reference this PVC in your Pods to mount the NFS volume.
 

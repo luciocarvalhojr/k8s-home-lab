@@ -144,10 +144,10 @@ Before you begin, ensure you have the following installed and configured:
 
 ## Repository Structure
 
-*   `argocd/`: Contains the master ArgoCD application that deploys all other applications (apps-of-apps pattern).
-*   `base/`: Kustomize base for a sample application.
-*   `overlays/`: Kustomize overlays for different environments (e.g., `dev`, `prod`).
-*   `cert-manager/`, `external-dns/`, etc.: Each directory is a self-contained component deployed as a Helm chart or Kubernetes manifests. Each has its own `README.md` for specific details.
+*   `bootstrap/`: One-time, order-dependent installs — ArgoCD, MetalLB, Sealed Secrets.
+*   `infrastructure/`: Platform services — cert-manager, ExternalDNS, monitoring, storage.
+*   `identity/`: Auth & access — Authentik IDP, k8s OIDC RBAC.
+*   `apps/`: Workloads — observatory, my-headlamp, myapp (base + overlays).
 *   `sealed-secrets.pem`: The cluster's public key used to seal secrets with `kubeseal`.
 
 ## Deployment Workflow
@@ -173,7 +173,7 @@ This setup is designed to be managed by ArgoCD. The recommended deployment proce
 3.  **Install ArgoCD:**
     First, you need to install ArgoCD itself into the cluster. This is a manual, one-time step.
     ```sh
-    # Follow the instructions in the argocd/README.md for the initial ArgoCD installation.
+    # Follow the instructions in bootstrap/argocd/README.md for the initial ArgoCD installation.
     # Typically, this involves creating the namespace and applying the official Helm chart.
     ```
 
@@ -181,29 +181,31 @@ This setup is designed to be managed by ArgoCD. The recommended deployment proce
     Once ArgoCD is running, you apply the root application, which tells ArgoCD to manage all other applications defined in this repository.
     ```sh
     # Ensure you are in the root of the repository
-    kubectl apply -f argocd/argodc-applications.yaml
+    kubectl apply -f bootstrap/argocd/argodc-applications.yaml
     ```
     ArgoCD will now start deploying all the components listed in `argodc-applications.yaml`. You can monitor the progress from the ArgoCD UI.
 
 ## Accessing Your Lab
 
-*   **ArgoCD:** Follow the instructions in the `argocd/README.md` to get the initial admin password and access the UI, typically via a port-forward.
+*   **ArgoCD:** Follow the instructions in `bootstrap/argocd/README.md` to get the initial admin password and access the UI, typically via a port-forward.
 *   **Grafana, Headlamp, etc.:** Once deployed by ArgoCD, these applications will be accessible via Ingress. Check the hostnames defined in their respective `ingress.yaml` or `values.yaml` files.
 
 ## Components
 
 | Component | Installation Method | Description |
 | --- | --- | --- |
-| [**ArgoCD**](argocd/) | Helm | Installs and configures ArgoCD for GitOps-style continuous deployment. |
-| [**cert-manager**](cert-manager/) | Helm | Sets up cert-manager for automated TLS certificate management from various issuing sources. |
-| [**ExternalDNS**](external-dns/) | Helm | Configures ExternalDNS to automatically manage DNS records for your services and ingresses. |
-| [**IDP (authentik)**](idp/) | Helm | Deploys authentik as an Identity Provider for centralized authentication. |
-| [**k8s-apiserver-oidc**](k8s-apiserver-oidc/) | Direct Apply | Configures the Kubernetes API server to use an OIDC provider for user authentication. |
-| [**MetalLB**](metallb/) | Helm | Installs MetalLB to provide LoadBalancer services for your bare-metal cluster. |
-| [**Monitoring**](monitoring/) | Helm | Sets up the kube-prometheus-stack for a complete cluster monitoring solution with Prometheus and Grafana. |
-| [**Headlamp**](my-headlamp/) | Helm | Installs Headlamp, a web-based UI for Kubernetes. |
-| [**StorageClass**](storageclass/) | Direct Apply | Defines a StorageClass for persistent storage using the NFS CSI driver. |
-| [**Main Application**](base/) | Kustomize | The main application, deployed via ArgoCD. |
+| [**ArgoCD**](bootstrap/argocd/) | Helm | Installs and configures ArgoCD for GitOps-style continuous deployment. |
+| [**MetalLB**](bootstrap/metallb/) | Helm | Installs MetalLB to provide LoadBalancer services for your bare-metal cluster. |
+| [**Sealed Secrets**](bootstrap/sealed-secrets/) | Helm | Installs the Sealed Secrets controller for encrypted secret management. |
+| [**cert-manager**](infrastructure/cert-manager/) | Helm | Sets up cert-manager for automated TLS certificate management. |
+| [**ExternalDNS**](infrastructure/external-dns/) | Helm | Configures ExternalDNS to automatically manage DNS records for your services and ingresses. |
+| [**Monitoring**](infrastructure/monitoring/) | Helm | Sets up the kube-prometheus-stack for a complete cluster monitoring solution with Prometheus and Grafana. |
+| [**StorageClass**](infrastructure/storage/) | Direct Apply | Defines a StorageClass for persistent storage using the NFS CSI driver. |
+| [**IDP (authentik)**](identity/idp/) | Helm | Deploys authentik as an Identity Provider for centralized authentication. |
+| [**k8s-apiserver-oidc**](identity/k8s-apiserver-oidc/) | Direct Apply | Configures the Kubernetes API server to use an OIDC provider for user authentication. |
+| [**Observatory**](apps/observatory/) | Helm | Auth service with OIDC and Redis. |
+| [**Headlamp**](apps/my-headlamp/) | Helm | Installs Headlamp, a web-based UI for Kubernetes. |
+| [**Main Application**](apps/myapp/) | Kustomize | The main application, deployed via ArgoCD. |
 
 ## License
 

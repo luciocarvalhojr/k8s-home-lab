@@ -63,23 +63,23 @@ This project includes examples for creating a `ClusterIssuer` and a wildcard `Ce
     kubeseal \
       --controller-name=sealed-secrets \
       --controller-namespace=sealed-secrets \
-      --format yaml > cert-manager/secrets-sealed.yaml
+      --format yaml > infrastructure/cert-manager/secrets-sealed.yaml
     ```
     After sealing, you can apply the sealed secret:
     ```sh
-    kubectl apply -f cert-manager/secrets-sealed.yaml
+    kubectl apply -f infrastructure/cert-manager/secrets-sealed.yaml
     ```
 
 2.  **Create the ClusterIssuer:**
     The `clusterissuer.yaml` file defines a `ClusterIssuer` that uses Cloudflare to solve DNS-01 challenges. It references the sealed secret created above.
     ```sh
-    kubectl apply -f cert-manager/clusterissuer.yaml
+    kubectl apply -f infrastructure/cert-manager/clusterissuer.yaml
     ```
 
 3.  **Create a wildcard certificate:**
     The `certificate-wildcard.yaml` file defines a wildcard certificate for your domain.
     ```sh
-    kubectl apply -f cert-manager/certificate-wildcard.yaml
+    kubectl apply -f infrastructure/cert-manager/certificate-wildcard.yaml
     ```
 
 ## Uninstallation

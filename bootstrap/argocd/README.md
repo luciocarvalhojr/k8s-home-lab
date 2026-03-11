@@ -17,16 +17,16 @@ This document outlines the installation and configuration of ArgoCD, a declarati
 
 3.  **Install ArgoCD using Helm:**
     ```sh
-    helm install argocd argo/argo-cd --namespace argocd -f argocd/values.yaml
+    helm install argocd argo/argo-cd --namespace argocd -f bootstrap/argocd/values.yaml
     ```
 
 ## 2. Configuration
 
 ### OIDC Integration
 
-ArgoCD is configured to use authentik as an OIDC provider via `argocd/values.yaml`.
+ArgoCD is configured to use authentik as an OIDC provider via `bootstrap/argocd/values.yaml`.
 
-> **Warning:** `argocd/values.yaml` currently contains the `clientSecret` in plaintext. This should be sealed before committing to a public repository.
+> **Warning:** `bootstrap/argocd/values.yaml` currently contains the `clientSecret` in plaintext. This should be sealed before committing to a public repository.
 
 To seal the OIDC client secret:
 

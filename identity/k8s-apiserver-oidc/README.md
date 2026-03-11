@@ -66,7 +66,7 @@ sudo systemctl restart k3s
 Apply the `ClusterRoleBinding` to grant `cluster-admin` rights to an OIDC group.
 
 ```sh
-kubectl apply -f k8s-apiserver-oidc/clusterrolebinding-oidc-group-kube-apiserver-admins.yaml
+kubectl apply -f identity/k8s-apiserver-oidc/clusterrolebinding-oidc-group-kube-apiserver-admins.yaml
 ```
 
 This binds the `cluster-admin` role to the `kube-apiserver-admins` group, which must exist in your OIDC provider.
