@@ -11,13 +11,13 @@ spec:
         - myapp.capihome.xyz
       secretName: wildcard-capihome-xyz-tls
   rules:
-  - host: myapp.capihome.xyz
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: myapp-service
-            port:
-              number: 80
+    - host: myapp.capihome.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp-service
+                port:
+                  number: 80

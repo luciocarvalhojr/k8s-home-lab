@@ -1,24 +1,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-headlamp
-  namespace: kube-system
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-cloudflare
     external-dns.alpha.kubernetes.io/hostname: my-headlamp.capihome.xyz
+    kube-linter.io/ignore-checks: dangling-ingress
+  name: my-headlamp
+  namespace: kube-system
 spec:
+  rules:
+    - host: my-headlamp.capihome.xyz
+      http:
+        paths:
+          - backend:
+              service:
+                name: my-headlamp
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - my-headlamp.capihome.xyz
       secretName: wildcard-capihome-xyz-tls
-  rules:
-  - host: my-headlamp.capihome.xyz
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: my-headlamp
-            port:
-              number: 80

@@ -61,9 +61,9 @@ Kubernetes `Secret` resources are only base64-encoded — not encrypted. Committ
 
 ## How the Two ArgoCD Apps Work Together
 
-| App | File | What it deploys |
-|-----|------|-----------------|
-| `auth-svc` | `bootstrap/argocd/obvervatory-auth-svc.yaml` | Helm chart — Deployment, Service, Ingress, ConfigMap |
+| App                           | File                                                | What it deploys                                           |
+| ----------------------------- | --------------------------------------------------- | --------------------------------------------------------- |
+| `auth-svc`                    | `bootstrap/argocd/obvervatory-auth-svc.yaml`        | Helm chart — Deployment, Service, Ingress, ConfigMap      |
 | `observatory-auth-svc-config` | `bootstrap/argocd/observatory-auth-svc-config.yaml` | Raw manifests from `apps/observatory/` — the SealedSecret |
 
 The Helm chart is configured with `externalSecret: true` in `auth-svc-values.yaml`, which tells it **not to create the `auth-svc-secret` Kubernetes Secret**. That Secret is owned entirely by the SealedSecret.
@@ -80,14 +80,14 @@ externalSecret: true  →  Helm skips Secret creation
 
 ## Secret vs ConfigMap
 
-| Key | Resource | Why |
-|-----|----------|-----|
-| `PORT`, `ENV`, `JWT_ACCESS_TTL` | ConfigMap (`auth-svc-config`) | Not sensitive |
-| `OIDC_ISSUER`, `OIDC_CLIENT_ID` | ConfigMap (`auth-svc-config`) | Not sensitive |
-| `OIDC_REDIRECT_URL`, `OTLP_ENDPOINT` | ConfigMap (`auth-svc-config`) | Not sensitive |
-| `OIDC_CLIENT_SECRET` | SealedSecret → Secret (`auth-svc-secret`) | Sensitive — OIDC credential |
-| `JWT_SECRET` | SealedSecret → Secret (`auth-svc-secret`) | Sensitive — signing key |
-| `REDIS_URL` | SealedSecret → Secret (`auth-svc-secret`) | May contain credentials |
+| Key                                  | Resource                                  | Why                         |
+| ------------------------------------ | ----------------------------------------- | --------------------------- |
+| `PORT`, `ENV`, `JWT_ACCESS_TTL`      | ConfigMap (`auth-svc-config`)             | Not sensitive               |
+| `OIDC_ISSUER`, `OIDC_CLIENT_ID`      | ConfigMap (`auth-svc-config`)             | Not sensitive               |
+| `OIDC_REDIRECT_URL`, `OTLP_ENDPOINT` | ConfigMap (`auth-svc-config`)             | Not sensitive               |
+| `OIDC_CLIENT_SECRET`                 | SealedSecret → Secret (`auth-svc-secret`) | Sensitive — OIDC credential |
+| `JWT_SECRET`                         | SealedSecret → Secret (`auth-svc-secret`) | Sensitive — signing key     |
+| `REDIS_URL`                          | SealedSecret → Secret (`auth-svc-secret`) | May contain credentials     |
 
 ---
 

@@ -7,17 +7,17 @@ spec:
   destination:
     namespace: monitoring
     server: https://kubernetes.default.svc
+  project: default
   sources:
-    - repoURL: https://prometheus-community.github.io/helm-charts
-      chart: kube-prometheus-stack
-      targetRevision: 82.1.1
+    - chart: kube-prometheus-stack
       helm:
         valueFiles:
           - $values/infrastructure/monitoring/values.yaml
-    - repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
+      repoURL: https://prometheus-community.github.io/helm-charts
+      targetRevision: 82.1.1
+    - ref: values
+      repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
       targetRevision: main
-      ref: values
-  project: default
   syncPolicy:
     automated:
       prune: true
