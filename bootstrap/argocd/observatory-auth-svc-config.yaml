@@ -4,17 +4,17 @@ metadata:
   name: observatory-auth-svc-config
   namespace: argocd
 spec:
+  destination:
+    namespace: observatory
+    server: https://kubernetes.default.svc
   project: default
   source:
+    directory:
+      exclude: '*-values.yaml'
+      recurse: false
+    path: apps/observatory/
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
     targetRevision: main
-    path: apps/observatory/
-    directory:
-      recurse: false
-      exclude: '*-values.yaml'
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: observatory
   syncPolicy:
     automated:
       prune: true

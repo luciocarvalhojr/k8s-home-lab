@@ -4,11 +4,11 @@ metadata:
   name: wildcard-capihome-xyz
   namespace: cert-manager
 spec:
-  secretName: wildcard-capihome-xyz-tls
   commonName: "*.capihome.xyz"
   dnsNames:
     - "*.capihome.xyz"
     - "capihome.xyz"
   issuerRef:
-    name: letsencrypt-cloudflare
     kind: ClusterIssuer
+    name: letsencrypt-cloudflare
+  secretName: wildcard-capihome-xyz-tls

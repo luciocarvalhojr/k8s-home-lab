@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
-  namespace: observatory
   labels:
     app: redis
+  name: redis
+  namespace: observatory
 spec:
-  type: ClusterIP
-  selector:
-    app: redis
   ports:
     - port: 6379
       targetPort: 6379
+  selector:
+    app: redis
+  type: ClusterIP

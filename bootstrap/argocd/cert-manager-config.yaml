@@ -4,13 +4,13 @@ metadata:
   name: cert-manager-config
   namespace: argocd
 spec:
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
   project: default
   source:
-    repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
     path: infrastructure/cert-manager/
+    repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
     targetRevision: main
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: cert-manager
   syncPolicy:
     automated: {}

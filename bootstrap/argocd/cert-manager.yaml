@@ -7,17 +7,17 @@ spec:
   destination:
     namespace: cert-manager
     server: https://kubernetes.default.svc
+  project: default
   sources:
-    - repoURL: https://charts.jetstack.io
-      chart: cert-manager
-      targetRevision: v1.20.0
+    - chart: cert-manager
       helm:
         valueFiles:
           - $values/infrastructure/cert-manager/values.yaml
-    - repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
+      repoURL: https://charts.jetstack.io
+      targetRevision: v1.20.0
+    - ref: values
+      repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
       targetRevision: main
-      ref: values
-  project: default
   syncPolicy:
     automated:
       prune: true

@@ -5,4 +5,18 @@ checks:
     - unset-memory-requirements  # home-lab: relaxed resource management
     - no-read-only-root-fs       # some charts don't support this yet
     - run-as-non-root            # some charts run as root
+    - dnsconfig-options          # home-lab: overly strict for internal workloads
+    - minimum-three-replicas     # home-lab: single replicas acceptable for stateful services
+    - no-node-affinity           # home-lab: limited nodes, node affinity not required
+    - non-isolated-pod           # home-lab: NetworkPolicies not enforced
+    - default-service-account    # home-lab: dedicated service accounts not required
+    - no-anti-affinity           # home-lab: limited nodes, anti-affinity not required
+    - env-value-from             # sealed secrets are not visible to kube-linter
+    - read-secret-from-env-var   # home-lab: env vars for secrets acceptable
+    - privileged-ports           # home-lab: port 80 usage acceptable
+    - required-annotation-email  # home-lab: owner annotations not enforced
+    - required-label-owner       # home-lab: owner labels not enforced
+    - restart-policy             # Deployment pods default to Always implicitly
+    - dangling-ingress           # Helm-deployed services are not visible to kube-linter
+    - cluster-admin-role-binding # intentional: OIDC admin group binding
 customChecks: []

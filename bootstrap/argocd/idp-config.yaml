@@ -4,17 +4,17 @@ metadata:
   name: authentik-idp-config
   namespace: argocd
 spec:
+  destination:
+    namespace: authentik
+    server: https://kubernetes.default.svc
   project: default
   source:
+    directory:
+      exclude: 'values.yaml'
+      recurse: false
+    path: identity/idp/
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
     targetRevision: main
-    path: identity/idp/
-    directory:
-      recurse: false
-      exclude: 'values.yaml'
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: authentik
   syncPolicy:
     automated:
       prune: true

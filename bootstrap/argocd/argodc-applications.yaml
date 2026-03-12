@@ -4,16 +4,16 @@ metadata:
   name: argo-applications
   namespace: argocd
 spec:
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
   project: default
   source:
-    repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
-    path: bootstrap/argocd/
-    targetRevision: main
     directory:
-      recurse: true
       exclude: 'values.yaml'
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: default
+      recurse: true
+    path: bootstrap/argocd/
+    repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
+    targetRevision: main
   syncPolicy:
     automated: {}

@@ -7,11 +7,11 @@ spec:
   destination:
     namespace: go-api
     server: https://kubernetes.default.svc
-  sources:
-    - repoURL: https://luciocarvalhojr.github.io/helm-charts
-      chart: go-api
-      targetRevision: 0.1.1
   project: default
+  sources:
+    - chart: go-api
+      repoURL: https://luciocarvalhojr.github.io/helm-charts
+      targetRevision: 0.1.1
   syncPolicy:
     automated:
       prune: true

@@ -7,11 +7,11 @@ spec:
   destination:
     namespace: kube-system
     server: https://kubernetes.default.svc
-  sources:
-    - repoURL: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
-      chart: csi-driver-nfs
-      targetRevision: 4.13.1
   project: default
+  sources:
+    - chart: csi-driver-nfs
+      repoURL: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts
+      targetRevision: 4.13.1
   syncPolicy:
     automated:
       prune: true
