@@ -35,6 +35,11 @@ jobs:
             -not -path "./bootstrap/argocd/*" \
             -not -name "values.yaml" \
             -not -name "*-values.yaml" \
+            -not -name ".kube-linter.yaml" \
+            -not -name ".pre-commit-config.yaml" \
+            -not -name ".yamllint.yaml" \
+            -not -name "sealedsecret-config.yaml" \
+            -not -name "replica-patch.yaml" \
             -not -name "*-sealed-secret.yaml" \
             | xargs kubeconform \
               -strict \
