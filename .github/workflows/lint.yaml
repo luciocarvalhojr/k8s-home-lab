@@ -33,6 +33,7 @@ jobs:
           find . -name "*.yaml" \
             -not -path "./.github/*" \
             -not -path "./bootstrap/argocd/*" \
+            -not -name "values.yaml" \
             -not -name "*-values.yaml" \
             -not -name "*-sealed-secret.yaml" \
             | xargs kubeconform \
