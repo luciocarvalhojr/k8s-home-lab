@@ -26,7 +26,7 @@ server:
       value: authentik
     - name: AUTHENTIK_POSTGRESQL__PORT
       value: "5432"
-    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+    - name: POSTGRES_PASSWORD
       valueFrom:
         secretKeyRef:
           name: authentik-secrets
@@ -55,7 +55,7 @@ worker:
       value: authentik
     - name: AUTHENTIK_POSTGRESQL__PORT
       value: "5432"
-    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+    - name: POSTGRES_PASSWORD
       valueFrom:
         secretKeyRef:
           name: authentik-secrets
