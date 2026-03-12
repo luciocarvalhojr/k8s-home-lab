@@ -43,6 +43,7 @@ repos:
     rev: v8.24.0
     hooks:
       - id: gitleaks
+        args: [--config, .gitleaks.toml]
 
   # ─── Kubernetes manifest validation ─────────────────────────────────────────
   # Requires kubeconform installed locally: brew install kubeconform

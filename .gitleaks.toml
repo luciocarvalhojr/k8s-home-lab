@@ -1,0 +1,8 @@
+[allowlist]
+  description = "Kubeseal ciphertext is encrypted — not real secrets"
+
+  # Allowlist by path: any file that is a SealedSecret resource
+  paths = [
+    '''.*-sealed[-\w]*\.yaml$''',
+    '''secrets-seal(ed|ead)\.yaml$''',
+  ]
