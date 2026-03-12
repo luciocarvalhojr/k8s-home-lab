@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: authentik-idp
+  namespace: argocd
+spec:
+  destination:
+    namespace: authentik
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: https://charts.goauthentik.io
+      chart: authentik
+      targetRevision: 2026.2.0
+      helm:
+        valueFiles:
+          - $values/identity/idp/values.yaml
+    - repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
+      targetRevision: main
+      ref: values
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - ApplyOutOfSyncOnly=true

@@ -1,38 +1,62 @@
+global:
+  postgresql:
+    auth:
+      existingSecret: "authentik-secrets"
+      secretKeys:
+        userPasswordKey: "AUTHENTIK_POSTGRESQL__PASSWORD"
+
 authentik:
-    secret_key: "glUj1lHT9HlDL1wUXNfjAVA2Iaw"
-    # This sends anonymous usage-data, stack traces on errors and
-    # performance data to sentry.io, and is fully opt-in
-    error_reporting:
-        enabled: true
-    postgresql:
-        password: "Hk1LFwdcQ3r45VrP17k7fbh9qjai6rHAwg"
+  existingSecret:
+    secretName: "authentik-secrets"
+  # This sends anonymous usage-data, stack traces on errors and
+  # performance data to sentry.io, and is fully opt-in
+  error_reporting:
+    enabled: true
 
 server:
-    ingress:
-        # Specify kubernetes ingress controller class name
-        ingressClassName: traefik
-        enabled: true
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-cloudflare
-          external-dns.alpha.kubernetes.io/hostname: auth.capihome.xyz
-        hosts:
+  env:
+    - name: AUTHENTIK_POSTGRESQL__HOST
+      value: authentik-postgresql
+    - name: AUTHENTIK_POSTGRESQL__NAME
+      value: authentik
+    - name: AUTHENTIK_POSTGRESQL__USER
+      value: authentik
+    - name: AUTHENTIK_POSTGRESQL__PORT
+      value: "5432"
+  ingress:
+    # Specify kubernetes ingress controller class name
+    ingressClassName: traefik
+    enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-cloudflare
+      external-dns.alpha.kubernetes.io/hostname: auth.capihome.xyz
+    hosts:
+      - auth.capihome.xyz
+    tls:
+      - hosts:
           - auth.capihome.xyz
-        tls:
-          - hosts:
-              - auth.capihome.xyz
-            secretName: wildcard-capihome-xyz-tls
+        secretName: wildcard-capihome-xyz-tls
+
+worker:
+  env:
+    - name: AUTHENTIK_POSTGRESQL__HOST
+      value: authentik-postgresql
+    - name: AUTHENTIK_POSTGRESQL__NAME
+      value: authentik
+    - name: AUTHENTIK_POSTGRESQL__USER
+      value: authentik
+    - name: AUTHENTIK_POSTGRESQL__PORT
+      value: "5432"
 
 postgresql:
-    enabled: true
-    auth:
-        password: "Hk1LFwdcQ3r45VrP17k7fbh9qjai6rHAwg"
-    primary:
-      persistence:
-        enabled: true
-        storageClass: nfs-rwx
-        accessModes:
-          - ReadWriteMany
-        size: 8Gi
+  enabled: true
+  primary:
+    persistence:
+      enabled: true
+      storageClass: nfs-rwx
+      accessModes:
+        - ReadWriteMany
+      size: 8Gi
 
 redis:
   enabled: true
