@@ -4,6 +4,9 @@ global:
       existingSecret: "authentik-secrets"
       secretKeys:
         userPasswordKey: "AUTHENTIK_POSTGRESQL__PASSWORD"
+      username: authentik
+      database: authentik
+
 
 authentik:
   existingSecret:
@@ -23,6 +26,11 @@ server:
       value: authentik
     - name: AUTHENTIK_POSTGRESQL__PORT
       value: "5432"
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-secrets
+          key: AUTHENTIK_POSTGRESQL__PASSWORD
   ingress:
     # Specify kubernetes ingress controller class name
     ingressClassName: traefik
@@ -47,7 +55,11 @@ worker:
       value: authentik
     - name: AUTHENTIK_POSTGRESQL__PORT
       value: "5432"
-
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-secrets
+          key: AUTHENTIK_POSTGRESQL__PASSWORD
 postgresql:
   enabled: true
   primary:
