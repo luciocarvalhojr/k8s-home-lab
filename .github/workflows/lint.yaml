@@ -33,8 +33,16 @@ jobs:
           find . -name "*.yaml" \
             -not -path "./.github/*" \
             -not -path "./bootstrap/argocd/*" \
+            -not -name "values.yaml" \
             -not -name "*-values.yaml" \
             -not -name "*-sealed-secret.yaml" \
+            -not -name "secrets-sealed.yaml" \
+            -not -name "kustomization.yaml" \
+            -not -name "sealedsecret-config.yaml" \
+            -not -name "replica-patch.yaml" \
+            -not -name ".kube-linter.yaml" \
+            -not -name ".yamllint.yaml" \
+            -not -name ".pre-commit-config.yaml" \
             | xargs kubeconform \
               -strict \
               -ignore-missing-schemas \
