@@ -12,7 +12,7 @@ spec:
     directory:
       exclude: 'values.yaml'
       recurse: true
-    path: bootstrap/argocd/
+    path: bootstrap/argocd/applications/
     repoURL: https://github.com/luciocarvalhojr/k8s-home-lab.git
     targetRevision: main
   syncPolicy:
