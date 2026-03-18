@@ -10,7 +10,7 @@ spec:
   project: default
   sources:
     # Chart from your Helm registry
-    - chart: auth-svc
+    - chart: obvervatory-auth-svc
       helm:
         valueFiles:
           - $values/apps/observatory/auth-svc-values.yaml
