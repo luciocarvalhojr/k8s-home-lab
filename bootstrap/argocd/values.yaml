@@ -11,7 +11,7 @@ configs:
       name: OIDC
       issuer: https://auth.capihome.xyz/application/o/argodc/
       clientID: argodc
-      clientSecret: ZyAzxpXlRKAYBIkItkOpEHxY9SMvA4qg55GLRqKIt4UatFnRUXIhmUxOUmVhPkAAhXwsxM5awKdVRmKnTqVV89PTpE94dh90hM1afG3PmQ5vxYu5Yg6dwA53WBDIlc0l
+      clientSecret: $argocd-oidc-secret:clientSecret
       enableUserInfoGroups: true
       requestedScopes: ["openid", "profile", "email", "groups"]
   rbac:
