@@ -1,0 +1,12 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: observatory-auth
+  namespace: observatory
+spec:
+  forwardAuth:
+    # Calls auth-svc introspect internally — never leaves the cluster
+    address: http://auth-svc.observatory.svc.cluster.local:8081/auth/introspect
+    authResponseHeaders:
+      - X-User-Subject   # verified subject (user ID) forwarded to upstream
+      - X-User-Email     # verified email forwarded to upstream
